@@ -1,13 +1,6 @@
 import tensorflow as tf
 
-n_1 = 100
-
-
-def hidden_layer(dim, n_1):
-    W = tf.Variable(tf.truncated_normal([dim, n_1], stddev=0.01))
-    b = tf.Variable(tf.constant(0.0, shape=[n_1]))
-    return W, b
-
+n_1 = 100  # no of neurons in the first layer
 
 class nn_linear(object):
     def __init__(self, X, y):
