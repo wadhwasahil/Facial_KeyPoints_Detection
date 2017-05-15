@@ -1,31 +1,7 @@
 import tensorflow as tf
 
 
-def fully_connected(input, size):
-    weights = tf.get_variable('weights',
-                              shape=[input.get_shape()[1], size],
-                              initializer=tf.contrib.layers.xavier_initializer()
-                              )
-    biases = tf.get_variable('biases',
-                             shape=[size],
-                             initializer=tf.constant_initializer(0.0)
-                             )
-    return tf.matmul(input, weights) + biases
-
-def pool(input, size):
-    return tf.nn.max_pool(
-        input,
-        ksize=[1, size, size, 1],
-        strides=[1, size, size, 1],
-        padding='SAME'
-    )
-
-
-def fully_connected_relu(input, size):
-    return tf.nn.relu(fully_connected(input, size))
-
 class conv_nn(object):
-
     def __init__(self, num_classes, img_dim=96):
         self.x = tf.placeholder(tf.float32, [None, img_dim * img_dim])
         self.y = tf.placeholder(tf.float32, [None, num_classes])
