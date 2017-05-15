@@ -42,10 +42,29 @@ def conv_NN(X, y):
     with graph.as_default():
         cnn = conv_nn.conv_nn(num_classes=30)
         global_step = tf.Variable(0, name="global_step", trainable=False)
-        # with tf.Session(graph=graph) as session:
-        #     session.run(tf.global_variables_initializer())
-        #     batches = data_helpers.batch_iter(zip(X, y), batch_size=64, num_epochs=num_epochs, shuffle=True)
-
+        optimizer = tf.train.MomentumOptimizer(
+            learning_rate=0.001,
+            momentum=0.9,
+            use_nesterov=True,
+        ).minimize(cnn.loss, global_step=global_step)
+        with tf.Session(graph=graph) as session:
+            train_loss_history = []
+            session.run(tf.global_variables_initializer())
+            batches = data_helpers.batch_iter(zip(X, y), batch_size=64, num_epochs=num_epochs, shuffle=True)
+            for batch in batches:
+                X_train, y_train = zip(*batch)
+                feed_dict = {cnn.x: np.asarray(X_train), cnn.y: np.asarray(y_train)}
+                _, step, loss = session.run([optimizer, global_step, cnn.loss], feed_dict)
+                time_str = datetime.datetime.now().isoformat()
+                print(loss)
+                # print("{}: step {}, loss {:g}".format(time_str, step, loss))
+                train_loss_history.append(loss)
+            x_axis = np.arange(step)
+            plt.plot(x_axis, train_loss_history, "b-", linewidth=2, label="train")
+            plt.grid()
+            plt.legend()
+            plt.ylabel("loss")
+            plt.show()
 
 
 X, y = data_helpers.get_data()
