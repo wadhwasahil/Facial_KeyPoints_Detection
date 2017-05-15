@@ -56,8 +56,7 @@ def conv_NN(X, y):
                 feed_dict = {cnn.x: np.asarray(X_train), cnn.y: np.asarray(y_train)}
                 _, step, loss = session.run([optimizer, global_step, cnn.loss], feed_dict)
                 time_str = datetime.datetime.now().isoformat()
-                print(loss)
-                # print("{}: step {}, loss {:g}".format(time_str, step, loss))
+                print("{}: step {}, loss {:g}".format(time_str, step, loss))
                 train_loss_history.append(loss)
             x_axis = np.arange(step)
             plt.plot(x_axis, train_loss_history, "b-", linewidth=2, label="train")
