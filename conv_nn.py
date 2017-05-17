@@ -9,7 +9,7 @@ class conv_nn(object):
         self.x_expanded = tf.expand_dims(tf.reshape(self.x, [-1, img_dim, img_dim]), axis=-1)
 
         with tf.variable_scope("conv1"):
-            W = tf.get_variable('weights', shape=[3, 3, 1, 32], initializer=tf.contrib.layers.xavier_initializer())
+            W = tf.get_variable('weights', shape=[2, 2, 1, 32], initializer=tf.contrib.layers.xavier_initializer())
             B = tf.get_variable('biases', shape=[32], initializer=tf.constant_initializer(0.0))
             conv = tf.nn.conv2d(self.x_expanded, W, strides=[1, 1, 1, 1], padding='VALID')
             relu = tf.nn.relu(conv + B)
@@ -34,7 +34,7 @@ class conv_nn(object):
         with tf.variable_scope("fc2"):
             W = tf.get_variable('weights', shape=[100, num_classes], initializer=tf.contrib.layers.xavier_initializer())
             B = tf.get_variable('biases', shape=[num_classes], initializer=tf.constant_initializer(0.0))
-            h = tf.nn.relu(tf.matmul(h, W) + B)
+            h = tf.matmul(h, W) + B
 
         self.scores = h
         with tf.variable_scope("loss"):

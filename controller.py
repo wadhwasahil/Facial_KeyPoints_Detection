@@ -1,11 +1,15 @@
+import datetime
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-import datetime
+
+import conv_nn
 import data_helpers
 import linear_nn
-import conv_nn
-import matplotlib.pyplot as plt
+
 num_epochs = 10
+
 
 def linear_NN(X, y):
     graph = tf.Graph()
@@ -37,7 +41,8 @@ def linear_NN(X, y):
             plt.ylabel("loss")
             plt.show()
 
-def conv_NN(X, y):
+
+def conv_NN(X, y, x_eval, y_eval):
     graph = tf.Graph()
     with graph.as_default():
         cnn = conv_nn.conv_nn(num_classes=30)
@@ -58,6 +63,13 @@ def conv_NN(X, y):
                 time_str = datetime.datetime.now().isoformat()
                 print("{}: step {}, loss {:g}".format(time_str, step, loss))
                 train_loss_history.append(loss)
+                if step % 100 == 0:
+                    print("Evaluation")
+                    print("*" * 15)
+                    feed_dict = {cnn.x: np.asarray(x_eval), cnn.y: np.asarray(y_eval)}
+                    _, step, loss = session.run([optimizer, global_step, cnn.loss], feed_dict)
+                    print("{}: step {}, loss {:g}".format(time_str, step, loss))
+
             x_axis = np.arange(step)
             plt.plot(x_axis, train_loss_history, "b-", linewidth=2, label="train")
             plt.grid()
@@ -67,5 +79,13 @@ def conv_NN(X, y):
 
 
 X, y = data_helpers.get_data()
+split = 200
+X_train = X[:split]
+X_eval = X[split:]git git
+
+
+
+y_train = y[:split]
+y_eval = y[split:]
 # linear_NN(X, y)
-conv_NN(X, y)
+conv_NN(X, y, X_eval, y_eval)
