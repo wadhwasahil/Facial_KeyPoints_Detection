@@ -3,8 +3,8 @@ import tensorflow as tf
 
 class conv_nn(object):
     def __init__(self, num_classes, img_dim=96):
-        self.x = tf.placeholder(tf.float32, [None, img_dim * img_dim])
-        self.y = tf.placeholder(tf.float32, [None, num_classes])
+        self.x = tf.placeholder(tf.float32, [None, img_dim * img_dim], name="x_input")
+        self.y = tf.placeholder(tf.float32, [None, num_classes], name="y_input")
 
         self.x_expanded = tf.expand_dims(tf.reshape(self.x, [-1, img_dim, img_dim]), axis=-1)
 
@@ -34,8 +34,5 @@ class conv_nn(object):
         with tf.variable_scope("fc2"):
             W = tf.get_variable('weights', shape=[100, num_classes], initializer=tf.contrib.layers.xavier_initializer())
             B = tf.get_variable('biases', shape=[num_classes], initializer=tf.constant_initializer(0.0))
-            h = tf.matmul(h, W) + B
-
-        self.scores = h
-        with tf.variable_scope("loss"):
-            self.loss = tf.reduce_mean(tf.square(self.scores - self.y))
+        self.scores = tf.nn.xw_plus_b(h, W, B, name="scores")
+        self.loss = tf.reduce_mean(tf.square(self.scores - self.y), name="loss")

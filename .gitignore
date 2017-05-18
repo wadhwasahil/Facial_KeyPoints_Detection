@@ -1,3 +1,6 @@
 *.zip
 *.csv
+*.xml
+.idea/
 __pycache__/
+data/
